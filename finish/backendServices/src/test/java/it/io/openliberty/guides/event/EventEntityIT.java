@@ -1,4 +1,3 @@
-// tag::copyright[]
 /*******************************************************************************
  * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -9,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - Initial implementation
  *******************************************************************************/
-// end::copyright[]
 package it.io.openliberty.guides.event;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,35 +59,28 @@ public class EventEntityIT extends EventIT {
     }
 
     @Test
-    // tag::testInvalidRead[]
     public void testInvalidRead() {
         assertEquals(true, getIndividualEvent(-1).isEmpty(),
           "Reading an event that does not exist should return an empty list");
     }
-    // end::testInvalidRead[]
 
     @Test
-    // tag::testInvalidDelete[]
     public void testInvalidDelete() {
         int deleteResponse = deleteRequest(-1);
         assertEquals(NOT_FOUND_CODE, deleteResponse,
           "Trying to delete an event that does not exist should return the "
           + "HTTP response code " + NOT_FOUND_CODE);
     }
-    // end::testInvalidDelete[]
 
     @Test
-    // tag::testInvalidUpdate[]
     public void testInvalidUpdate() {
         int updateResponse = updateRequest(eventForm, -1);
         assertEquals(NOT_FOUND_CODE, updateResponse,
           "Trying to update an event that does not exist should return the "
           + "HTTP response code " + NOT_FOUND_CODE);
     }
-    // end::testInvalidUpdate[]
 
     @Test
-    // tag::testReadIndividualEvent[]
     public void testReadIndividualEvent() {
         int postResponse = postRequest(eventForm);
         assertEquals(NO_CONTENT_CODE, postResponse,
@@ -104,10 +95,8 @@ public class EventEntityIT extends EventIT {
         assertEquals(NO_CONTENT_CODE, deleteResponse,
           "Deleting an event should return the HTTP response code " + NO_CONTENT_CODE);
     }
-    // end::testReadIndividualEvent[]
 
     @Test
-    // tag::testCURD[]
     public void testCRUD() {
         int eventCount = getRequest().size();
         int postResponse = postRequest(eventForm);
@@ -136,7 +125,6 @@ public class EventEntityIT extends EventIT {
           "Total number of events stored should be the same after testing "
           + "CRUD operations.");
     }
-    // end::testCURD[]
 
     @AfterEach
     public void teardown() {

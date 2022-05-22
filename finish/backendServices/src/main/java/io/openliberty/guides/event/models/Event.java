@@ -1,4 +1,3 @@
-// tag::copyright[]
 /*******************************************************************************
  * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -9,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - Initial implementation
  *******************************************************************************/
-// end::copyright[]
 package io.openliberty.guides.event.models;
 
 import java.io.Serializable;
@@ -20,31 +18,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.GenerationType;
-
-// tag::Entity[]
 @Entity
-// end::Entity[]
-// tag::Table[]
 @Table(name = "Event")
-// end::Table[]
-// tag::NamedQuery[]
 @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e")
 @NamedQuery(name = "Event.findEvent", query = "SELECT e FROM Event e WHERE "
     + "e.name = :name AND e.location = :location AND e.time = :time")
-// end::NamedQuery[]
-// tag::Event[]
 public class Event implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    // tag::GeneratedValue[]
     @GeneratedValue(strategy = GenerationType.AUTO)
-    // end::GeneratedValue[]
-    // tag::Id[]
     @Id
-    // end::Id[]
-    // tag::Column[]
     @Column(name = "eventId")
-    // end::Column[]
     private int id;
 
     @Column(name = "eventLocation")
@@ -151,5 +134,4 @@ public class Event implements Serializable {
                 + "]";
     }
 }
-// end::Event[]
 

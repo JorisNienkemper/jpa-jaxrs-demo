@@ -1,4 +1,3 @@
-// tag::copyright[]
 /*******************************************************************************
  * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -9,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - Initial implementation
  *******************************************************************************/
-// end::copyright[]
 package io.openliberty.guides.event.resources;
 
 import jakarta.json.Json;
@@ -18,15 +16,7 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.FormParam;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.enterprise.context.RequestScoped;
@@ -35,16 +25,86 @@ import jakarta.inject.Inject;
 import io.openliberty.guides.event.dao.EventDao;
 import io.openliberty.guides.event.models.Event;
 
-// tag::RequestedScoped[]
 @RequestScoped
-// end::RequestedScoped[]
 @Path("events")
-// tag::DAO[]
-// tag::EventResource[]
 public class EventResource {
 
     @Inject
     private EventDao eventDAO;
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response addNewEventWithJson(Event newEvent) {
+
+        if (!eventDAO.findEvent(newEvent.getName(), newEvent.getLocation(), newEvent.getTime()).isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Event already exists").build();
+        }
+        eventDAO.createEvent(newEvent);
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @PATCH
+    @Path("{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response partialUpdateEventWithJason(Event partialdEvent,
+                                                @PathParam("id") int id) {
+        Event prevEvent = eventDAO.readEvent(id);
+        if (prevEvent == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Event does not exist").build();
+        }
+        if (partialdEvent.getName() != null) {
+            if (prevEvent.getName().equalsIgnoreCase(partialdEvent.getName())) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Event already exists").build();
+            } else {
+                prevEvent.setName(partialdEvent.getName());
+            }
+        }
+        if (partialdEvent.getLocation() != null) {
+            if (prevEvent.getLocation().equalsIgnoreCase(partialdEvent.getLocation())) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Event already exists").build();
+            } else {
+                prevEvent.setLocation(partialdEvent.getLocation());
+            }
+        }
+        if (partialdEvent.getTime() != null)
+            if (prevEvent.getTime().equalsIgnoreCase(partialdEvent.getTime())) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Event already exists").build();
+            } else {
+                prevEvent.setTime(partialdEvent.getTime());
+            }
+        eventDAO.updateEvent(prevEvent);
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @PUT
+    @Path("{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response updateEventWithJason(Event updatedEvent,
+                                         @PathParam("id") int id) {
+        Event prevEvent = eventDAO.readEvent(id);
+        if (prevEvent == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Event does not exist").build();
+        }
+        if (!eventDAO.findEvent(updatedEvent.getName(), updatedEvent.getLocation(), updatedEvent.getTime()).isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Event already exists").build();
+        }
+        prevEvent.setName(updatedEvent.getName());
+        prevEvent.setLocation(updatedEvent.getLocation());
+        prevEvent.setTime(updatedEvent.getTime());
+
+        eventDAO.updateEvent(prevEvent);
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
 
     /**
      * This method creates a new event from the submitted data (name, time and
@@ -52,15 +112,13 @@ public class EventResource {
      */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    // tag::Transactional[]
     @Transactional
-    // end::Transactional[]
     public Response addNewEvent(@FormParam("name") String name,
-        @FormParam("time") String time, @FormParam("location") String location) {
+                                @FormParam("time") String time, @FormParam("location") String location) {
         Event newEvent = new Event(name, location, time);
         if (!eventDAO.findEvent(name, location, time).isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity("Event already exists").build();
+                    .entity("Event already exists").build();
         }
         eventDAO.createEvent(newEvent);
         return Response.status(Response.Status.NO_CONTENT).build();
@@ -75,16 +133,16 @@ public class EventResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Transactional
     public Response updateEvent(@FormParam("name") String name,
-        @FormParam("time") String time, @FormParam("location") String location,
-        @PathParam("id") int id) {
+                                @FormParam("time") String time, @FormParam("location") String location,
+                                @PathParam("id") int id) {
         Event prevEvent = eventDAO.readEvent(id);
         if (prevEvent == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                           .entity("Event does not exist").build();
+                    .entity("Event does not exist").build();
         }
         if (!eventDAO.findEvent(name, location, time).isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity("Event already exists").build();
+                    .entity("Event already exists").build();
         }
         prevEvent.setName(name);
         prevEvent.setLocation(location);
@@ -104,7 +162,7 @@ public class EventResource {
         Event event = eventDAO.readEvent(id);
         if (event == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                           .entity("Event does not exist").build();
+                    .entity("Event does not exist").build();
         }
         eventDAO.deleteEvent(event);
         return Response.status(Response.Status.NO_CONTENT).build();
@@ -122,7 +180,7 @@ public class EventResource {
         Event event = eventDAO.readEvent(eventId);
         if (event != null) {
             builder.add("name", event.getName()).add("time", event.getTime())
-                .add("location", event.getLocation()).add("id", event.getId());
+                    .add("location", event.getLocation()).add("id", event.getId());
         }
         return builder.build();
     }
@@ -138,11 +196,9 @@ public class EventResource {
         JsonArrayBuilder finalArray = Json.createArrayBuilder();
         for (Event event : eventDAO.readAllEvents()) {
             builder.add("name", event.getName()).add("time", event.getTime())
-                   .add("location", event.getLocation()).add("id", event.getId());
+                    .add("location", event.getLocation()).add("id", event.getId());
             finalArray.add(builder.build());
         }
         return finalArray.build();
     }
 }
-// end::DAO[]
-// end::EventResource[]
