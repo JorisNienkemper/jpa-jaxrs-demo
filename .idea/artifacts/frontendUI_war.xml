@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="frontendUI:war">
+    <output-path>$PROJECT_DIR$/start/frontendUI/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>frontendUI</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="frontendUI.war">
+      <element id="artifact" artifact-name="frontendUI:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="backendServices:war exploded">
+    <output-path>$PROJECT_DIR$/start/backendServices/target/backendServices</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <exploded>true</exploded>
+        <module>backendServices</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="backendServices" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/start/backendServices/target/backendServices/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="backendServices/web/Web" />
+    </root>
+  </artifact>
+</component>

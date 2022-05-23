@@ -83,6 +83,8 @@ public class EventResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
+    //PUT Idempotent
+
     @PUT
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -98,11 +100,7 @@ public class EventResource {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Event already exists").build();
         }
-        prevEvent.setName(updatedEvent.getName());
-        prevEvent.setLocation(updatedEvent.getLocation());
-        prevEvent.setTime(updatedEvent.getTime());
-
-        eventDAO.updateEvent(prevEvent);
+        eventDAO.updateEvent(updatedEvent);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
@@ -123,6 +121,7 @@ public class EventResource {
         eventDAO.createEvent(newEvent);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
+
 
     /**
      * This method updates a new event from the submitted data (name, time and
